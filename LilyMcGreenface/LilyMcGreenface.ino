@@ -119,6 +119,6 @@ void loop() {
     delay(1000);
   }
 
-  client.publish(mqtt_status_topic, analogRead(A0));
+  client.publish(mqtt_status_topic, analogRead(A0)); // maps ADC value to 0...100% and publishes it
 
 }
