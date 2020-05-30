@@ -12,6 +12,12 @@
 WiFiClient  client;
 
 void setup() {
+  pinMode(D0, OUTPUT);
+  pinMode(D5, OUTPUT);
+
+  digitalWrite(D0, HIGH);
+  digitalWrite(D5, LOW);
+
   Serial.begin(9600);
   delay(100);
 
