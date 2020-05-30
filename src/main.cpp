@@ -1,13 +1,19 @@
 #include <Arduino.h>
 
-#include "ThingSpeak.h"
-#include "secrets.h"
 #include <ESP8266WiFi.h>
+#include "ThingSpeak.h"
 
- unsigned long myChannelNumber = SECRET_CH_ID;
- const char * myWriteAPIKey = SECRET_WRITE_APIKEY;
- char ssid[] = SECRET_SSID;   // your network SSID (name)
- char pass[] = SECRET_PASS;   // your network password
+#include "secrets.h"
+#include "calibration.h"
+
+unsigned long myChannelNumber = SECRET_CH_ID;
+const char * myWriteAPIKey = SECRET_WRITE_APIKEY; 
+char ssid[] = SECRET_SSID;   // your network SSID (name)
+char pass[] = SECRET_PASS;   // your network password
+
+int fromLow = LUFTWERT;
+int fromHigh = WASSERWERT;
+
 
 WiFiClient  client;
 
@@ -40,20 +46,10 @@ void loop() {
     Serial.println("\nConnected.");
   }
 
-  // Measure Analog Input (A0)
   int valueA0 = analogRead(A0);
-  //int valueA0 = analogRead(A0);
-
-  // Write value to Field 1 of a ThingSpeak Channel
-  int httpCode = ThingSpeak.writeField(myChannelNumber, 1, valueA0, myWriteAPIKey);
-
-  if (httpCode == 200) {
-    Serial.println("Channel write successful.");
-  }
-  else {
-    Serial.println("Problem writing to channel. HTTP error code " + String(httpCode));
-  }
-
-  // Wait 20 seconds to update the channel again
+  ThingSpeak.setField(1, valueA0);
+  valueA0 = map(valueA0, fromLow, fromHigh, 0, 100);
+  ThingSpeak.setField(2, valueA0);
+  ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
   delay(20000);
 }

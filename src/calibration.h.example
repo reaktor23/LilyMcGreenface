@@ -1,0 +1,2 @@
+#define WASSERWERT 514           // ist später 100%
+#define LUFTWERT 848            // ist später 0%
